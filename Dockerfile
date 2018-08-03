@@ -16,11 +16,10 @@ RUN apt -y install wget gcc make file \
     make -j$(nproc) && \
     make install
 
-FROM busybox:1.29.1-glibc
+FROM debian:9.5-slim
 
-# Copy over required deps
-COPY --from=build-container /lib/x86_64-linux-gnu/libpcre.so.3 /lib/x86_64-linux-gnu/libpcre.so.3
-COPY --from=build-container /lib/x86_64-linux-gnu/libdl.so.2 /lib/x86_64-linux-gnu/libdl.so.2
-COPY --from=build-container /lib/x86_64-linux-gnu/librt.so.1 /lib/x86_64-linux-gnu/librt.so.1
+RUN apt update && \
+    apt dist-upgrade -y && \
+    apt install -y gcc
 
 COPY --from=build-container /opt/varnish /opt/varnish
